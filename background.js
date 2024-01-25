@@ -9,8 +9,8 @@ let distractionScores = [
 
 
 ]
-document.body.style.backgroundColor = "red"
-console.log("Test")
+localStorage.distractionScores = distractionScores
+
 
 const urlToScore = historyItem => {
     let score = 0
@@ -29,16 +29,9 @@ const calcScore = async () => {
         maxResults: 5
    })
 
-    historyItems.forEach(item => score += calcScore(item))
-    console.log(score)
-    return score
+    historyItems.forEach(item => score += urlToScore(item))
+    localStorage.score = score
+    
 }
 
-let warningScreen = document.createElement("h1")
-warningScreen.innerText = "TOO DISTRACTED"
-calcScore().then(score =>{
-    if (score >= 100) {
-        document.body = warningScreen
-    }
-
-})
+browser.history.onVisited.addListener(calcScore)
