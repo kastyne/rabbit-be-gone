@@ -1,36 +1,12 @@
 const historyList = document.getElementById("historyList")
-let distractionScores = [
-    {"string": "wikipedia", "score": 25},
-    {"string": "tvtropes", "score": 50},
-    {"string": "xkcd", "score": 50},
+const heading = document.getElementById('heading')
 
-    {"string": "spacebattles", "score": 100},
-    {"string": "sufficient velocity", "score": 100},
-    {"string": "archiveofourown", "score": 100},
+chrome.storage.local.get().then(localStorage => {
+    heading.innerText = `Score: ${localStorage.score}`
 
-
-]
-
-const calcScore = historyItem => {
-    let score = 0
-    distractionScores.forEach(distraction => {
-        if (historyItem.url.includes(distraction.string)) score += distraction.score 
-        else if (historyItem.title.includes(distraction.string)) score += distraction.score
-    })
-
-    return score
-}
-
-browser.history
-    .search({
-        text: "",
-        maxResults: 5
-    })
-    .then(historyItems => {
-        historyItems.forEach(item => {
-          
+    localStorage.historyItems.forEach(item => {
         let itemElement = document.createElement('li')
-        itemElement.innerText = item.title + " --" + calcScore(item)
+        itemElement.innerText = item.title + " --" + item.score
         historyList.appendChild(itemElement)  
-        })
     })
+})
