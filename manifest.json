@@ -6,11 +6,12 @@
     "permissions": [
         "history",
         "activeTab",
+        "tabs",
         "storage"
     ],
 
     "background": {
-        "service_worker": "background.js",
+        "service_worker": "background.js", 
         "type": "module"
     },
     "content_scripts": [
