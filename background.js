@@ -4,7 +4,7 @@ let distractionScores = [
     {"string": "xkcd", "score": 50},
 
     {"string": "spacebattles", "score": 100},
-    {"string": "sufficient velocity", "score": 100},
+    {"string": "sufficientvelocity", "score": 100},
     {"string": "archiveofourown", "score": 100},
 ]
 
@@ -57,18 +57,6 @@ function checkForDistraction(url, distractions) {
     }
 
     return;
-}
-
-
-const calcScore = async () => {
-    let score = 0
-    historyItems = await browser.history.search({
-        text: "",
-        maxResults: 5
-   })
-
-    historyItems.forEach(item => score += urlToScore(item))
-    STORAGE.set({"score": score}, function() {});
 }
 
 // browser.history.onVisited.addListener(calcScore)
