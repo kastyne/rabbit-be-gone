@@ -6,12 +6,13 @@ let distractionScores = [
     {"string": "spacebattles", "score": 100},
     {"string": "sufficient velocity", "score": 100},
     {"string": "archiveofourown", "score": 100},
-
-
 ]
-localStorage.distractionScores = distractionScores
 
+// Storage handler for synced Chrome extension data
+const STORAGE = chrome.storage.sync;
+STORAGE.set({"distractionScores": distractionScores}, function() {});
 
+// Pending deletion?
 const urlToScore = historyItem => {
     let score = 0
     distractionScores.forEach(distraction => {
@@ -19,8 +20,21 @@ const urlToScore = historyItem => {
         else if (historyItem.title.includes(distraction.string)) score += distraction.score
     })
 
-    return score
+    return score;
 }
+
+// Primary listener for url updates
+chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
+    if (!changeInfo.url) { // Only fire if url has updated
+        return;
+    }
+
+    console.log(changeInfo.url);
+    STORAGE.get(['distractionScores']).then((result)=>{
+        console.log(result)
+    });
+});
+
 
 const calcScore = async () => {
     let score = 0
@@ -30,8 +44,7 @@ const calcScore = async () => {
    })
 
     historyItems.forEach(item => score += urlToScore(item))
-    localStorage.score = score
-    
+    STORAGE.set({"score": score}, function() {});
 }
 
-browser.history.onVisited.addListener(calcScore)
+// browser.history.onVisited.addListener(calcScore)
