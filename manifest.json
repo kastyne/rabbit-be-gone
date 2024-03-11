@@ -10,11 +10,6 @@
         "storage"
     ],
 
-    "background": {
-        "service_worker": "background.js", 
-        "type": "module"
-    },
-
     "content_scripts": [
         {
             "matches": ["<all_urls>"],
@@ -25,5 +20,11 @@
     "action": {
         "default_popup": "popup/index.html",
         "default_icon": "assets/logo2.png"
+    },
+    
+    "browser_specific_settings": {
+        "gecko": {
+            "id": "random@example.org"
+        }
     }
 }
