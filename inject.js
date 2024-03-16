@@ -1,12 +1,30 @@
-const pageToScore = (historyItem, distractionScores) => {
-    let score = 0
-    distractionScores.forEach(distraction => {
-        if (historyItem.url.includes(distraction.string)) score += distraction.score 
-        else if (historyItem.title.includes(distraction.string)) score += distraction.score
-    })
+let pageToScore = (historyItem, distractionScores) => {
+        let score = 0
+        distractionScores.forEach(distraction => {
+            if (historyItem.url.includes(distraction.string)) score += distraction.score 
+            else if (historyItem.title.includes(distraction.string)) score += distraction.score
+        })
+    
+        return score
+    }
 
-    return score
+let scoreReducer = (score, historyItem) => score += pageToScore(historyItem, config.distractionScores),
+    timeCuttof = (historyItem) => currentPage.time - 18*(10^5) <= historyItem.time // 30 minnute time cuttof
 
+const blacklistMode = (context, currentPage) => {
+    let currentScore = pageToScore(currentPage, context.distractionScores)
+
+    if (context.cuttoffMode = "pageCount") accumulatedScore = historyList.slice(-5).reduce(scoreReducer, 0)
+    else if (context.cuttoffMode = "time") accumulatedScore = historyList.filter(timeCuttof).reduce(scoreReducer, 0)
+
+    if(currentScore > 0 && accumulatedScore >= 100) {
+       return true
+    }
+
+}
+
+const whitelistMode = (context, currentPage) = {
+    
 }
 
 const blockPage = (currentScore) => {
@@ -15,7 +33,7 @@ const blockPage = (currentScore) => {
     document.body = body
 }
 
-const presetScores = [
+const presetDistractionScores = [
     {"string": "wikipedia", "score": 25},
     {"string": "tvtropes", "score": 50},
     {"string": "xkcd", "score": 50},
@@ -26,25 +44,31 @@ const presetScores = [
 ]
 
 
-// TODO?: write small wrapper around the storage apis cuz they are a pain
+// extention storage apis cuz they are a pain
 chrome.storage.local.get().then(localStorage => {
 chrome.storage.sync.get().then(syncStorage => {
-    let distractionScores = syncStorage.distractionScores ? syncStorage.distractionScores : presetScores
-    let historyList = localStorage.historyList ? localStorage.historyList : []
+
+    // a buncha turnaries to check if any default settings have been changed
+    // todo come up w/ better way to fix it
+    // todo also ome up w/ verification checks
+    let context = {
+        distractionScores: syncStorage.distractionScores ? syncStorage.distractionScores : presetDistractionScores,
+        cuttoffMode: syncStorage.cuttoffMode ? syncStorage.cuttoffMode : "pageCount",
+        filterMode: syncStorage.filterMode ? syncStorage.filterMode : "blacklist",
+
+        historyList: localStorage.historyList ? localStorage.historyList : [],
+    }
 
     let currentPage = {
         'url': String(window.location),
-        'title': document.title
+        'title': document.title,
+        'time': Date.now(),
     }
 
-    let currentScore = pageToScore(currentPage, distractionScores)
-    historyList.push(currentPage)
-    
-    chrome.storage.local.set({'historyList': historyList})
+    // add current page to history list
+    context.historyList.push(currentPage)
+    chrome.storage.local.set({'historyList': context.historyList})
 
-    let accumulatedScore = historyList.slice(-5).reduce((score, historyItem) => score += pageToScore(historyItem, distractionScores), 0)
-
-    if(currentScore > 0 && accumulatedScore >= 100) {
-       blockPage(currentScore) // mby just pass in some storage context thing in future?
-    }
+    if (context.filterMode = "blacklist") blacklistMode(context, currentPage)
+    else if (context.filterMode = "whitelist") whitelistMode(context, currentPage)
 })})
