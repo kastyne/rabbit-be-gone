@@ -1,14 +1,84 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Test</title>
-</head>
-<body>
-    <h1 id="heading">Score: </h1>
-    <ul id="historyList"></ul>
+
+    <style>
+        body {
+            display: grid;
+            grid-template-columns: 1fr;
+            grid-template-rows: 1fr 9fr;
+            gap: 0px 0px;
+            grid-auto-flow: row;
+            min-width: 250px;
+            grid-template-areas:
+                "nav"
+                "page";
+        }
+
+        nav {
+            display: grid;
+            grid-area: nav;
+            grid-template-columns: 1fr 1fr 1fr 1fr;
+            grid-template-areas: "homeBtn listBtn settingsBtn";
+        }
+
+        #settingsBtn {
+            grid-area: settingsBtn
+        }
+
+        #listBtn {
+            grid-area: listBtn
+        }
+
+        #homeBtn {
+            grid-area: homeBtn
+        }
+
+        .currPage {
+            grid-area: page
+        }
+
+        .hidden {
+            display: none;
+        }
+    </style>
 
     <script src="main.js"></script>
+</head>
+
+<body x-data="model">
+    <nav>
+        <button id="home" @click="changePage">Home</button>
+        <button id="list" @click="changePage">List</button>
+        <button id="settings" @click="changePage">Settings</button>
+        <button id="about" @click="changePage">About</button>
+    </nav>
+    <section :class="homePage">
+        <h1 id="scoreHeading" x-text="scoreTxt"></h1>
+        <ul id="historyList"></ul>
+    </section>
+    <section :class="listPage">
+        <h1>Block Lists</h1>
+    </section>
+    <section :class="settingsPage">
+        <h1>Settings</h1>
+
+        <form id="settingsForm">
+            <input type="checkbox" name="tabURl" id="">Scan Tab Urls <br>
+            <input type="checkbox" name="tabNames" id="">Scan Tab Names <br>
+            <button type="submit">Save</button>
+        </form>
+    </section>
+    <section :class="aboutPage">
+        <h1>About</h1>
+        <span>Extension version </span>
+        <span x-text="version"></span>
+    </section>
+
+    <script src="alpine.js" defer></script>
 </body>
 </html>
