@@ -14,8 +14,8 @@ let scoreReducer = (score, historyItem) => score += pageToScore(historyItem, con
 const blacklistMode = (context, currentPage) => {
     let currentScore = pageToScore(currentPage, context.distractionScores)
 
-    if (context.cuttoffMode = "pageCount") accumulatedScore = historyList.slice(-5).reduce(scoreReducer, 0)
-    else if (context.cuttoffMode = "time") accumulatedScore = historyList.filter(timeCuttof).reduce(scoreReducer, 0)
+    if (context.cutoffMode = "pageCount") accumulatedScore = context.historyList.slice(-5).reduce(scoreReducer, 0)
+    else if (context.cutoffMode = "time") accumulatedScore = context.historyList.filter(timeCuttof).reduce(scoreReducer, 0)
 
     if(currentScore > 0 && accumulatedScore >= 100) {
        return true
@@ -23,13 +23,38 @@ const blacklistMode = (context, currentPage) => {
 
 }
 
-const whitelistMode = (context, currentPage) = {
-    
+
+const isInWhitelist = (allowedKeywords, allowedUrls, page) => {
+    // TODO: fancy tracking statistics for rule-break
+    if (allowedKeywords.indexOf(page.url) > -1 || allowedKeywords.indexOf(page.title) > -1) {
+        return true;
+    }
+
+    // Not a good way to check urls, check domain in the future?
+    if (allowedUrls.indexOf(page.url) > -1) {
+        return true;
+    }
+
+    return false;
+}
+
+
+/**
+ * A "white mode" enforcer - only allow visiting urls specified
+ * 
+ * @param context: browser storage
+ * @param currentPage: updated page payload
+ */
+const whitelistMode = (context, currentPage) => {
+    const isAllowed = isInWhitelist(context.allowedKeywords, context.allowedUrls, currentPage);
+    if (!isAllowed) {
+        blockPage(0);
+    }
 }
 
 const blockPage = (currentScore) => {
     let body = document.createElement('body')
-    body.innerText = `test ${currentScore}`
+    body.innerText = `YOU FAILED! ${currentScore}`
     document.body = body
 }
 
@@ -43,6 +68,14 @@ const presetDistractionScores = [
     {"string": "archiveofourown", "score": 100},
 ]
 
+const allowedUrlsPreset = [
+    "https://www.google.com/"
+]
+
+const allowedKeywordsPreset = [
+    "learn",
+]
+
 
 // extention storage apis cuz they are a pain
 chrome.storage.local.get().then(localStorage => {
@@ -53,12 +86,16 @@ chrome.storage.sync.get().then(syncStorage => {
     // todo also ome up w/ verification checks
     let context = {
         distractionScores: syncStorage.distractionScores ? syncStorage.distractionScores : presetDistractionScores,
-        cuttoffMode: syncStorage.cuttoffMode ? syncStorage.cuttoffMode : "pageCount",
-        filterMode: syncStorage.filterMode ? syncStorage.filterMode : "blacklist",
 
+        allowedUrls: syncStorage.allowedUrls ?? allowedUrlsPreset,
+        allowedKeywords: syncStorage.allowedKeywords ?? allowedKeywordsPreset,
+
+        cutoffMode: syncStorage.cutoffMode ? syncStorage.cutoffMode : "pageCount",
+        filterMode: syncStorage.filterMode ? syncStorage.filterMode : "whitelist",
         historyList: localStorage.historyList ? localStorage.historyList : [],
     }
 
+    // Payload for all tab update data
     let currentPage = {
         'url': String(window.location),
         'title': document.title,
@@ -66,9 +103,8 @@ chrome.storage.sync.get().then(syncStorage => {
     }
 
     // add current page to history list
-    context.historyList.push(currentPage)
-    chrome.storage.local.set({'historyList': context.historyList})
-
-    if (context.filterMode = "blacklist") blacklistMode(context, currentPage)
-    else if (context.filterMode = "whitelist") whitelistMode(context, currentPage)
+    context.historyList.push(currentPage);
+    chrome.storage.local.set({'historyList': context.historyList});
+    if (context.filterMode === "blacklist") blacklistMode(context, currentPage);
+    else if (context.filterMode === "whitelist") whitelistMode(context, currentPage);
 })})
