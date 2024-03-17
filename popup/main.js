@@ -1,8 +1,10 @@
 // alpine has to be initialized in this odd way to follow the CSP rules for extentions
 document.addEventListener('alpine:init', () => { 
     Alpine.data('model', () => ({
+        // Unfortunately programmatically getting manifest info requires background.js
+        // Otherwise we could do browser.runtime.getManifest().version
+        version: 0.1,
         currentPage: "home",
-
         score: 10,
         scoreTxt: `Score: ${this.score}`,
         history: [],
@@ -12,7 +14,7 @@ document.addEventListener('alpine:init', () => {
             this.homePage = this.currentPage == 'home' ? 'currPage' : 'hidden' 
             this.listPage = this.currentPage == 'list' ? 'currPage' : 'hidden'
             this.settingsPage = this.currentPage == 'settings' ? 'currPage' : 'hidden'
-            
+            this.aboutPage = this.currentPage == 'about' ? 'currPage' : 'hidden'
         },
 
         // this is the only way i can get reactivity to work in CSP mode
@@ -20,6 +22,7 @@ document.addEventListener('alpine:init', () => {
             this.homePage = "currPage"
             this.listPage = "hidden"
             this.settingsPage = "hidden"
+            this.aboutPage = "hidden"
         }
     }))
 })
