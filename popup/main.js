@@ -1,9 +1,7 @@
 // alpine has to be initialized in this odd way to follow the CSP rules for extentions
-document.addEventListener('alpine:init', () => { 
+document.addEventListener('alpine:init', () => {
     Alpine.data('model', () => ({
-        // Unfortunately programmatically getting manifest info requires background.js
-        // Otherwise we could do browser.runtime.getManifest().version
-        version: 0.1,
+
         currentPage: "home",
         score: 10,
         scoreTxt: `Score: ${this.score}`,
@@ -11,7 +9,7 @@ document.addEventListener('alpine:init', () => {
         changePage(event) {
             this.currentPage = event.target.id
 
-            this.homePage = this.currentPage == 'home' ? 'currPage' : 'hidden' 
+            this.homePage = this.currentPage == 'home' ? 'currPage' : 'hidden'
             this.listPage = this.currentPage == 'list' ? 'currPage' : 'hidden'
             this.settingsPage = this.currentPage == 'settings' ? 'currPage' : 'hidden'
             this.aboutPage = this.currentPage == 'about' ? 'currPage' : 'hidden'
@@ -19,6 +17,12 @@ document.addEventListener('alpine:init', () => {
 
         // this is the only way i can get reactivity to work in CSP mode
         init() {
+            // Many Chrome/FF methods share the same name
+            this.client = (typeof chrome !== 'undefined') ? chrome : browser
+            this.manifest = this.client.runtime.getManifest()
+            this.name = this.manifest.name
+            this.version = this.manifest.version
+
             this.homePage = "currPage"
             this.listPage = "hidden"
             this.settingsPage = "hidden"
