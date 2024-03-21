@@ -17,11 +17,9 @@ document.addEventListener('alpine:init', () => {
 
         // this is the only way i can get reactivity to work in CSP mode
         init() {
-            // Many Chrome/FF methods share the same name
-            this.client = (typeof chrome !== 'undefined') ? chrome : browser
-            this.manifest = this.client.runtime.getManifest()
-            this.name = this.manifest.name
-            this.version = this.manifest.version
+            let manifest = chrome.runtime.getManifest()
+            this.name = manifest.name
+            this.version = manifest.version
 
             this.homePage = "currPage"
             this.listPage = "hidden"
