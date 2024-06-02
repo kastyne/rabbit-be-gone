@@ -1,4 +1,3 @@
-// alpine has to be initialized in this odd way to follow the CSP rules for extentions
 document.addEventListener('alpine:init', () => {
     Alpine.data('model', () => ({
 
@@ -15,12 +14,32 @@ document.addEventListener('alpine:init', () => {
             this.aboutPage = this.currentPage == 'about' ? 'currPage' : 'hidden'
         },
 
-        // this is the only way i can get reactivity to work in CSP mode
+        
+        update(event) {
+            this.title = event.target.value
+            // Needs a setter?
+        },
+        
+
         init() {
-            let manifest = chrome.runtime.getManifest()
+            chrome.storage.local.get().then(localStorage => {
+                this.context = localStorage.context;
+                if (this.context) {
+                    this.historyList = this.context.historyList;
+                    this.allowedKeywords = this.context.allowedKeywords
+                    this.allowedUrls = this.context.allowedUrls
+                }
+            })
+            
+            // Initialise in-storage variables to avoid CSP errors
+            this.context = null;
+            this.historyList = null;
+            this.allowedKeywords = []
+            this.allowedUrls = []
+
+            const manifest = chrome.runtime.getManifest()
             this.name = manifest.name
             this.version = manifest.version
-
             this.homePage = "currPage"
             this.listPage = "hidden"
             this.settingsPage = "hidden"

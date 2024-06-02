@@ -63,6 +63,18 @@
     </section>
     <section :class="listPage">
         <h1>Block Lists</h1>
+        <p>Customise lists here.</p>
+        
+        <textarea :value="allowedUrls" @input="update">
+        </textarea>
+        <!-- <span x-text="allowedUrls"></span> -->
+
+        <div x-data="allowedUrls">
+            <template x-for="url of allowedUrls">
+                <div x-text="url"></div>
+            </template>
+        </div>
+        
     </section>
     <section :class="settingsPage">
         <h1>Settings</h1>

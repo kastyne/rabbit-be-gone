@@ -70,7 +70,8 @@ const presetDistractionScores = [
 ]
 
 const allowedUrlsPreset = [
-    "https://www.google.com/"
+    "https://www.google.com/",
+    "https://www.khanacademy.org/"
 ]
 
 const allowedKeywordsPreset = [
@@ -105,7 +106,7 @@ chrome.storage.sync.get().then(syncStorage => {
 
     // add current page to history list
     context.historyList.push(currentPage);
-    chrome.storage.local.set({'historyList': context.historyList});
+    chrome.storage.local.set({'context': context});
 
 
     if (context.filterMode === "blacklist") blacklistMode(context, currentPage);
