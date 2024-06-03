@@ -76,6 +76,9 @@ const allowedUrlsPreset = [
 
 const allowedKeywordsPreset = [
     "learn",
+    "library",
+    "math",
+    "science",
 ]
 
 
