@@ -14,10 +14,19 @@ document.addEventListener('alpine:init', () => {
             this.aboutPage = this.currentPage == 'about' ? 'currPage' : 'hidden'
         },
 
-        
-        update(event) {
-            this.title = event.target.value
-            // Needs a setter?
+
+        deleteKeyword(event) {
+            if (!this.context) {
+                return;
+            }
+           
+            for (let key in this.context.allowedKeywords) {
+                if (this.context.allowedKeywords[key] === event.target.value) {
+                    delete this.context.allowedKeywords[key];
+                }
+            }
+
+            chrome.storage.local.set({'context': this.context});
         },
         
 

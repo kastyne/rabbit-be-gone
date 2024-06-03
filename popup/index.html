@@ -64,14 +64,24 @@
     <section :class="listPage">
         <h1>Block Lists</h1>
         <p>Customise lists here.</p>
-        
-        <textarea :value="allowedUrls" @input="update">
-        </textarea>
-        <!-- <span x-text="allowedUrls"></span> -->
 
+        <h3>Whitelist URLs</h3>
         <div x-data="allowedUrls">
             <template x-for="url of allowedUrls">
-                <div x-text="url"></div>
+                <div>
+                    <span x-text="url"></span>
+                    <button @click="#">Remove</button>
+                </div>
+            </template>
+        </div>
+
+        <h3>Whitelist Keywords</h3>
+        <div x-data="allowedKeywords">
+            <template x-for="keyword of allowedKeywords">
+                <div>
+                    <span x-text="keyword"></span>
+                    <button :value="keyword" @click="deleteKeyword">Remove</button>
+                </div>                
             </template>
         </div>
         
