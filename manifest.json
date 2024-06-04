@@ -17,6 +17,13 @@
         }
     ],
 
+    "web_accessible_resources": [
+        {
+            "matches": ["<all_urls>"],
+            "resources": ["assets/*", "blockpage/*"]
+        }
+    ],
+
     "action": {
         "default_popup": "popup/index.html",
         "default_icon": "assets/logo2.png"

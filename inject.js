@@ -54,9 +54,7 @@ const whitelistMode = (context, currentPage) => {
 }
 
 const blockPage = (currentScore) => {
-    let body = document.createElement('body')
-    body.innerText = `YOU FAILED! ${currentScore}`
-    document.body = body
+    window.location = chrome.runtime.getURL("blockpage/index.html")
 }
 
 const presetDistractionScores = [
