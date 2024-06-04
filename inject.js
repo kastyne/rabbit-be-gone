@@ -19,7 +19,9 @@ const blacklistMode = (context, currentPage) => {
     else if (context.cutoffMode = "time") accumulatedScore = context.historyList.filter(timeCuttof).reduce(scoreReducer, 0)
 
     if(currentScore > 0 && accumulatedScore >= 100) {
-       blockPage(currentScore)
+       blockPage({
+        currentScore, currentPage
+       })
     }
 
 }
@@ -53,8 +55,8 @@ const whitelistMode = (context, currentPage) => {
     }
 }
 
-const blockPage = (currentScore) => {
-    window.location = chrome.runtime.getURL("blockpage/index.html")
+const blockPage = (pageContext) => {
+    window.location = chrome.runtime.getURL("blockpage/index.html") + "#" + JSON.stringify(pageContext)
 }
 
 const presetDistractionScores = [
