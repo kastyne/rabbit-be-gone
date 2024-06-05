@@ -6,46 +6,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Extension</title>
 
-    <style>
-        body {
-            display: grid;
-            grid-template-columns: 1fr;
-            grid-template-rows: 1fr 9fr;
-            gap: 0px 0px;
-            grid-auto-flow: row;
-            min-width: 250px;
-            grid-template-areas:
-                "nav"
-                "page";
-        }
-
-        nav {
-            display: grid;
-            grid-area: nav;
-            grid-template-columns: 1fr 1fr 1fr 1fr;
-            grid-template-areas: "homeBtn listBtn settingsBtn";
-        }
-
-        #settingsBtn {
-            grid-area: settingsBtn
-        }
-
-        #listBtn {
-            grid-area: listBtn
-        }
-
-        #homeBtn {
-            grid-area: homeBtn
-        }
-
-        .currPage {
-            grid-area: page
-        }
-
-        .hidden {
-            display: none;
-        }
-    </style>
+    <link rel="stylesheet" href="/assets/style.css">
+    <link rel="stylesheet" href="style.css">
 
     <script src="main.js"></script>
 </head>
@@ -101,6 +63,6 @@
         <span x-text="version"></span>
     </section>
 
-    <script src="alpine.js" defer></script>
+    <script src="/assets/alpine.js" defer></script>
 </body>
 </html>
