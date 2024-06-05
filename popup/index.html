@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Test</title>
+    <title>Extension</title>
 
     <style>
         body {
@@ -65,23 +65,23 @@
         <h1>Block Lists</h1>
         <p>Customise lists here.</p>
 
-        <h3>Whitelist URLs</h3>
-        <div x-data="allowedUrls">
-            <template x-for="url of allowedUrls">
-                <div>
-                    <span x-text="url"></span>
-                    <button @click="#">Remove</button>
-                </div>
-            </template>
-        </div>
-
         <h3>Whitelist Keywords</h3>
         <div x-data="allowedKeywords">
             <template x-for="keyword of allowedKeywords">
                 <div>
                     <span x-text="keyword"></span>
-                    <button :value="keyword" @click="deleteKeyword">Remove</button>
+                    <button :value="keyword" data-collection="wkw" @click="deleteItem">Remove</button>
                 </div>                
+            </template>
+        </div>
+
+        <h3>Whitelist URLs</h3>
+        <div x-data="allowedUrls">
+            <template x-for="url of allowedUrls">
+                <div>
+                    <span x-text="url"></span>
+                    <button :value="url" data-collection="wurl" @click="deleteItem">Remove</button>
+                </div>
             </template>
         </div>
         

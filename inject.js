@@ -106,7 +106,7 @@ chrome.storage.sync.get().then(syncStorage => {
         'title': document.title,
         'time': Date.now(),
     }
-
+    
     // add current page to history list
     context.historyList.push(currentPage);
     chrome.storage.local.set({'context': context});

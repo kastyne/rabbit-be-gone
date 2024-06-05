@@ -15,14 +15,21 @@ document.addEventListener('alpine:init', () => {
         },
 
 
-        deleteKeyword(event) {
+        deleteItem(event) {
             if (!this.context) {
                 return;
             }
-           
-            for (let key in this.context.allowedKeywords) {
-                if (this.context.allowedKeywords[key] === event.target.value) {
-                    delete this.context.allowedKeywords[key];
+
+            const collections = {
+                wkw: this.context.allowedKeywords,
+                wurl: this.context.allowedUrls,
+            }
+
+            this.msg = event.target.getAttribute('data-collection')
+            const collection = collections[event.target.getAttribute('data-collection')];
+            for (let key in collection) {
+                if (collection[key] === event.target.value) {
+                    delete collection[key];
                 }
             }
 
@@ -56,23 +63,3 @@ document.addEventListener('alpine:init', () => {
         }
     }))
 })
-
-/*
-chrome.storage.local.get().then(localStorage => {
-    heading.innerText = `Score: ${localStorage.score}`
-
-    localStorage.historyItems.forEach(item => {
-        let itemElement = document.createElement('lwi')
-        itemElement.innerText = item.title + " --" + item.score
-        historyList.appendChild(itemElement)  
-
-    settingsForm.addEventListener('submit', () => {
-        FormData(settingsForm).entries().forEach((entry) => {
-            key, value = entry
-            chrome.storage.sync.set([{
-                key, value
-            }])
-        })
-    })
-})
-*/
