@@ -29,6 +29,11 @@
 
         <h3>Whitelist Keywords</h3>
         <div x-data="allowedKeywords">
+            <div>
+                <p>Add a new keyword:</p>
+                <input :value="tempwkw" data-collection="wkw" @input="updateTemp"></input>
+                <button data-collection="wkw" @click="updateItem">Add</button>
+            </div>
             <template x-for="keyword of allowedKeywords">
                 <div>
                     <span x-text="keyword"></span>
@@ -39,6 +44,11 @@
 
         <h3>Whitelist URLs</h3>
         <div x-data="allowedUrls">
+            <div>
+                <p>Add a new url:</p>
+                <input :value="tempwurl" data-collection="wurl" @input="updateTemp"></input>
+                <button data-collection="wurl" @click="updateItem">Add</button>
+            </div>
             <template x-for="url of allowedUrls">
                 <div>
                     <span x-text="url"></span>
