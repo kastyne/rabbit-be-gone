@@ -35,7 +35,7 @@ def build(mode, pack=False):
 
 
 # variable names are hard
-mustachePattern = re.compile('%%([\s]*.*?[\s]*)%%', re.DOTALL)
+mustachePattern = re.compile('/\*\*([\s]*.*?[\s]*)\*\*/', re.DOTALL)
 def splitText(text):
     mustaches = re.finditer(mustachePattern, text)
 
