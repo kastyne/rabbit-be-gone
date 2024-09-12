@@ -1,0 +1,31 @@
+{
+    "name": "RabbitBeGone!",
+    "description": "No going down that rabbit hole for you",
+    "version": "0.1",
+    "manifest_version": 3,
+    "permissions": [
+        "history",
+        "activeTab",
+        "tabs",
+        "storage"
+    ],
+
+    "content_scripts": [
+        {
+            "matches": ["<all_urls>"],
+            "js": ["inject.js"]
+        }
+    ],
+
+    "web_accessible_resources": [
+        {
+            "matches": ["<all_urls>"],
+            "resources": ["assets/*", "blockpage/*"]
+        }
+    ],
+    
+    "action": {
+        "default_popup": "popup/index.html",
+        "default_icon": "assets/imgs/logo2.png"
+    }
+}
