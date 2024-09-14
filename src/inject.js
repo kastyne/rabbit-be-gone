@@ -1,12 +1,12 @@
 let pageToScore = (historyItem, distractionScores) => {
-        let score = 0
-        distractionScores.forEach(distraction => {
-            if (historyItem.url.includes(distraction.string)) score += distraction.score 
-            else if (historyItem.title.includes(distraction.string)) score += distraction.score
-        })
-    
-        return score
-    }
+    let score = 0
+    distractionScores.forEach(distraction => {
+        if (historyItem.url.includes(distraction.string)) score += distraction.score 
+        else if (historyItem.title.includes(distraction.string)) score += distraction.score
+    })
+
+    return score
+}
 
 
 const blacklistMode = (context, currentPage) => {
@@ -19,44 +19,27 @@ const blacklistMode = (context, currentPage) => {
     else if (context.cutoffMode = "time") accumulatedScore = context.historyList.filter(timeCuttof).reduce(scoreReducer, 0)
 
     if(currentScore > 0 && accumulatedScore >= 100) {
-       blockPage({
-        currentScore, currentPage
-       })
+       blockPage(currentPage)
     }
-
 }
 
 
-const isInWhitelist = (allowedKeywords, allowedUrls, page) => {
-    // TODO: fancy tracking statistics for rule-break
-    if (allowedKeywords.indexOf(page.url) > -1 || allowedKeywords.indexOf(page.title) > -1) {
-        return true;
-    }
-
-    // Not a good way to check urls, check domain in the future?
-    if (allowedUrls.indexOf(page.url) > -1) {
-        return true;
-    }
-
-    return false;
-}
-
-
-/**
- * A "white mode" enforcer - only allow visiting urls specified
- * 
- * @param context: browser storage
- * @param currentPage: updated page payload
- */
 const whitelistMode = (context, currentPage) => {
-    const isAllowed = isInWhitelist(context.allowedKeywords, context.allowedUrls, currentPage);
-    if (!isAllowed) {
-        blockPage(0);
+    for (url of context.allowedUrls) {
+        if (currentPage.url.includes(url)) return true
     }
+
+    for (keyword of context.allowedKeywords) {
+        if (currentPage.url.includes(keyword)) return true
+        else if (currentPage.title.includes(keyword)) return true
+    }
+
+    blockPage(currentPage);
 }
 
-const blockPage = (pageContext) => {
-    window.location = chrome.runtime.getURL("blockpage/index.html") + "#" + JSON.stringify(pageContext)
+
+const blockPage = (currentPage) => {
+    window.location = chrome.runtime.getURL("blockpage/index.html") + "#" + JSON.stringify(currentPage)
 }
 
 const presetDistractionScores = [
