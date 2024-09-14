@@ -1,5 +1,5 @@
 # i think i may have overcomplicated this LOL
-import shutil, zipfile, re, os, logging
+import shutil, zipfile, re, os, hashlib, logging
 from pathlib import Path
 
 srcDir = Path('src/')
@@ -92,14 +92,30 @@ def removeTrailingCommas(text):
 
     return text
 
+def updateHashDir(directory, hash):
+    assert Path(directory).is_dir()
+    for path in sorted(Path(directory).iterdir(), key=lambda p: str(p).lower()):
+        hash.update(path.name.encode())
+        if path.is_file():
+            with open(path, "rb") as f:
+                for chunk in iter(lambda: f.read(4096), b""):
+                    hash.update(chunk)
+        elif path.is_dir():
+            hash = updateHashDir(path, hash)
+    return hash
+
+
+def hashDir(directory):
+    return updateHashDir(directory, hashlib.md5()).hexdigest()
+    
 def watch(args):
-    lastModified = os.path.getmtime(srcDir/'manifest.json')
+    lastHash = hashDir(srcDir)
     while True:
-        modified = os.path.getmtime(srcDir/'manifest.json')
-        if modified != lastModified:
-            print('changes detected: rebuilding')
+        newHash = hashDir(srcDir)
+        if newHash != lastHash:
+            print('change detected: rebuilding')
             build(args.mode)
-            lastModified = modified
+            lastHash = newHash
         time.sleep(.5)
 
 if __name__ == '__main__':
