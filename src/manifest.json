@@ -27,5 +27,13 @@
     "action": {
         "default_popup": "popup/index.html",
         "default_icon": "assets/imgs/logo2.png"
-    }
+    },
+
+    /** only firefox **/
+    "browser_specific_settings": {
+        "gecko": {
+            "id": "roadworkinwonderland@catcatgoos.org"
+        }
+
+    } /** end **/
 }
