@@ -1,5 +1,5 @@
 # i think i may have overcomplicated this LOL
-import shutil, zipfile, re, logging
+import shutil, zipfile, re, os, logging
 from pathlib import Path
 
 srcDir = Path('src/')
@@ -92,8 +92,18 @@ def removeTrailingCommas(text):
 
     return text
 
+def watch(args):
+    lastModified = os.path.getmtime(srcDir/'manifest.json')
+    while True:
+        modified = os.path.getmtime(srcDir/'manifest.json')
+        if modified != lastModified:
+            print('changes detected: rebuilding')
+            build(args.mode)
+            lastModified = modified
+        time.sleep(.5)
+
 if __name__ == '__main__':
-    import argparse
+    import argparse, time
 
     parser = argparse.ArgumentParser()
     parser.add_argument("mode")
@@ -101,5 +111,13 @@ if __name__ == '__main__':
     # TODO: watch mode
 
     args = parser.parse_args()
-    build(args.mode)
 
+    build(args.mode)
+    
+    # somehow the most efficent way without non builtin modules
+    if not args.watch: quit()
+    try:
+        watch(args)
+    except KeyboardInterrupt:
+        print('Bye')
+        quit()
