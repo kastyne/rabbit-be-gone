@@ -9,7 +9,8 @@
     <link rel="stylesheet" href="/assets/style.css">
     <link rel="stylesheet" href="style.css">
 
-    <script src="main.js"></script>
+    <script src="/assets/storage.js"></script>
+    <script defer src="main.js"></script>
 </head>
 
 <body x-data="model">
@@ -29,30 +30,28 @@
 
         <h3>Whitelist Keywords</h3>
         <div x-data="allowedKeywords">
-            <div>
-                <p>Add a new keyword:</p>
-                <input :value="tempwkw" data-collection="wkw" @input="updateTemp"></input>
-                <button data-collection="wkw" @click="updateItem">Add</button>
-            </div>
+            <form data-collection="allowedKeywords" @submit="addItem">
+                <input name="keyword" placeholder="Add Keyword"></input>
+                <button type="submit">Add</button>
+            </form>
             <template x-for="keyword of allowedKeywords">
                 <div>
                     <span x-text="keyword"></span>
-                    <button :value="keyword" data-collection="wkw" @click="deleteItem">Remove</button>
+                    <button :value="keyword" data-collection="allowedKeywords" @click="deleteItem">Remove</button>
                 </div>                
             </template>
         </div>
 
         <h3>Whitelist URLs</h3>
         <div x-data="allowedUrls">
-            <div>
-                <p>Add a new url:</p>
-                <input :value="tempwurl" data-collection="wurl" @input="updateTemp"></input>
-                <button data-collection="wurl" @click="updateItem">Add</button>
-            </div>
+            <form data-collection="allowedUrls" @submit="addItem">
+                <input name="keyword" placeholder="Add URL"></input>
+                <button type="submit">Add</button>
+            </form>
             <template x-for="url of allowedUrls">
                 <div>
                     <span x-text="url"></span>
-                    <button :value="url" data-collection="wurl" @click="deleteItem">Remove</button>
+                    <button :value="url" data-collection="allowedUrls" @click="deleteItem">Remove</button>
                 </div>
             </template>
         </div>

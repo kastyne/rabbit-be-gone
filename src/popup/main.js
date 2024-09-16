@@ -1,11 +1,20 @@
 document.addEventListener('alpine:init', () => {
     Alpine.data('model', () => ({
 
-        currentPage: "home",
-        score: 10,
-        scoreTxt: `Score: ${this.score}`,
-        history: [],
+        historyList: [],
+        allowedKeywords: [],
+        allowedUrls: [],
 
+        name: '',
+        version: '',
+        
+        // todo: move to pager module
+        currentPage: "home",
+        homePage: "currPage",
+        listPage: "hidden",
+        settingsPage: "hidden",
+        aboutPage: "hidden",
+        
         changePage(event) {
             this.currentPage = event.target.id
 
@@ -17,19 +26,8 @@ document.addEventListener('alpine:init', () => {
 
 
         deleteItem(event) {
-            if (!this.context) {
-                return;
-            }
-
-            this.msg = event.target.getAttribute('data-collection')
-            const collection = this.collections[event.target.getAttribute('data-collection')];
-            for (let key in collection) {
-                if (collection[key] === event.target.value) {
-                    delete collection[key];
-                }
-            }
-
-            chrome.storage.local.set({'context': this.context});
+            if (!this.context) return
+            this.context.remove(event.target.getAttribute('data-collection'), event.target.value)
         },
 
 
@@ -40,52 +38,21 @@ document.addEventListener('alpine:init', () => {
             this[event.target.getAttribute('data-collection')] = event.target.value;
         },
         
-
-        updateItem(event) {
-            if (!this.context) {
-                return;
-            }
+        addItem(event) {
+            event.preventDefault()
+            if (!this.context) return
             
-            const collection = this.collections[event.target.getAttribute('data-collection')];
-            // Add a new key-value pair (hardcoded index, not good)
-            collection[Object.keys(collection).length] = this[event.target.getAttribute('data-collection')];
-            
-            chrome.storage.local.set({'context': this.context});
-        },
+            let item = (new FormData(event.target)).get('keyword')
+            this.context.add(event.target.getAttribute('data-collection'), item)
+        }, 
 
 
-        init() {
-            chrome.storage.local.get().then(localStorage => {
-                this.context = localStorage.context;
-                if (this.context) {
-                    this.historyList = this.context.historyList;
-                    this.allowedKeywords = this.context.allowedKeywords
-                    this.allowedUrls = this.context.allowedUrls
-
-                    this.collections = {
-                        wkw: this.allowedKeywords,
-                        wurl: this.allowedUrls
-                    }
-                }
-            })
-            
-            // Initialise in-storage variables to avoid CSP errors
-            this.context = null;
-            this.historyList = null;
-            this.allowedKeywords = [];
-            this.allowedUrls = [];
-
-            // Surely there is a better way to handle temp input values? :(
-            this.tempwkw = null;
-            this.tempwurl = null;
+        init() {    getExtentionContext(context => {
+            context.inject(this) // csp bypass 
             
             const manifest = chrome.runtime.getManifest()
             this.name = manifest.name
             this.version = manifest.version
-            this.homePage = "currPage"
-            this.listPage = "hidden"
-            this.settingsPage = "hidden"
-            this.aboutPage = "hidden"
-        }
+        })}
     }))
 })
