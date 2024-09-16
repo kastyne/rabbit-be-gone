@@ -8,36 +8,11 @@ document.addEventListener('alpine:init', () => {
         name: '',
         version: '',
         
-        // todo: move to pager module
-        currentPage: "home",
-        homePage: "currPage",
-        listPage: "hidden",
-        settingsPage: "hidden",
-        aboutPage: "hidden",
-        
-        changePage(event) {
-            this.currentPage = event.target.id
-
-            this.homePage = this.currentPage == 'home' ? 'currPage' : 'hidden'
-            this.listPage = this.currentPage == 'list' ? 'currPage' : 'hidden'
-            this.settingsPage = this.currentPage == 'settings' ? 'currPage' : 'hidden'
-            this.aboutPage = this.currentPage == 'about' ? 'currPage' : 'hidden'
-        },
-
-
         deleteItem(event) {
             if (!this.context) return
             this.context.remove(event.target.getAttribute('data-collection'), event.target.value)
         },
 
-
-        /**
-         * Stores the value of an input field 
-         */
-        updateTemp(event) {
-            this[event.target.getAttribute('data-collection')] = event.target.value;
-        },
-        
         addItem(event) {
             event.preventDefault()
             if (!this.context) return
@@ -49,10 +24,37 @@ document.addEventListener('alpine:init', () => {
 
         init() {    getExtentionContext(context => {
             context.inject(this) // csp bypass 
-            
+
+            pager.inject(this, 'Page',
+                ['home', 'about', 'list', 'settings'], 'home')
+
             const manifest = chrome.runtime.getManifest()
             this.name = manifest.name
             this.version = manifest.version
         })}
     }))
 })
+
+const pager = {
+    currentPage: "",
+    pages: [],
+
+    changePage(event) {
+        this.currentPage = event.target.id
+        this.pages.forEach(page => this.object[page + this.suffix] = this.currentPage == page ? 'currPage' : 'hidden')
+    },
+
+    inject(object, suffix, pageList, first = '') {
+
+        this.pages = pageList
+        this.currentPage = first
+
+        object.currentPage = this.currentPage
+        object.changePage = this.changePage.bind(this)
+
+        this.object = object
+        this.suffix = suffix
+
+        this.changePage({target: {id: this.currentPage}}) //ew
+    }
+}
