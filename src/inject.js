@@ -42,59 +42,14 @@ const blockPage = (currentPage) => {
     window.location = chrome.runtime.getURL("blockpage/index.html") + "#" + JSON.stringify(currentPage)
 }
 
-const presetDistractionScores = [
-    {"string": "wikipedia", "score": 25},
-    {"string": "tvtropes", "score": 50},
-    {"string": "xkcd", "score": 50},
-
-    {"string": "spacebattles", "score": 100},
-    {"string": "sufficientvelocity", "score": 100},
-    {"string": "archiveofourown", "score": 100},
-]
-
-const allowedUrlsPreset = [
-    "https://www.google.com/",
-    "https://www.khanacademy.org/"
-]
-
-const allowedKeywordsPreset = [
-    "learn",
-    "library",
-    "math",
-    "science",
-]
-
-
-// extention storage apis cuz they are a pain
-chrome.storage.local.get().then(localStorage => {
-chrome.storage.sync.get().then(syncStorage => {
-
-    // a buncha turnaries to check if any default settings have been changed
-    // todo come up w/ better way to fix it
-    // todo also ome up w/ verification checks
-    let context = {
-        distractionScores: syncStorage.distractionScores ? syncStorage.distractionScores : presetDistractionScores,
-
-        allowedUrls: syncStorage.allowedUrls ?? allowedUrlsPreset,
-        allowedKeywords: syncStorage.allowedKeywords ?? allowedKeywordsPreset,
-
-        cutoffMode: syncStorage.cutoffMode ? syncStorage.cutoffMode : "pageCount",
-        filterMode: syncStorage.filterMode ? syncStorage.filterMode : "blacklist",
-        historyList: localStorage.historyList ? localStorage.historyList : [],
-    }
-
-    // Payload for all tab update data
+getExtentionContext(context => {
     let currentPage = {
         'url': String(window.location),
         'title': document.title,
         'time': Date.now(),
     }
-    
-    // add current page to history list
-    context.historyList.push(currentPage);
-    chrome.storage.local.set({'context': context});
-
+    context.historyPush(currentPage);
 
     if (context.filterMode === "blacklist") blacklistMode(context, currentPage);
     else if (context.filterMode === "whitelist") whitelistMode(context, currentPage);
-})})
+})

@@ -13,10 +13,10 @@
     "content_scripts": [
         {
             "matches": ["<all_urls>"],
-            "js": ["inject.js"]
+            "js": ["assets/storage.js", "inject.js"]
         }
     ],
-
+    
     "web_accessible_resources": [
         {
             "matches": ["<all_urls>"],
