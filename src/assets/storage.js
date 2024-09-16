@@ -46,20 +46,20 @@ const getExtentionContext = callback => {
             },
 
             add(arrayName, item) {
-                if (notIn(arrayName, ['distractionScores', 'allowedUrls', 'allowedKewords'])) return false
-
+                if (notIn(arrayName, ['distractionScores', 'allowedUrls', 'allowedKeywords'])) return false
+                
                 this[arrayName].push(item)
-                chrome.storage.sync.set({arrayName: this[arrayName]})
+                chrome.storage.sync.set({[arrayName]: this[arrayName]})
             },
 
             remove(arrayName, item) {
-                if (notIn(arrayName, ['distractionScores', 'allowedUrls', 'allowedKewords'])) return false
+                if (notIn(arrayName, ['distractionScores', 'allowedUrls', 'allowedKeywords'])) return false
 
                 let index = this[arrayName].indexOf(item)
                 if (index > -1) {
                     this[arrayName].splice(index, 1)
                 }
-                chrome.storage.sync.set({arrayName: this[arrayName]})
+                chrome.storage.sync.set({[arrayName]: this[arrayName]})
             },
 
             changeMode(mode, value) {
@@ -73,7 +73,7 @@ const getExtentionContext = callback => {
                 object.context = this;
                 object.historyList = this.historyList;
                 object.allowedKeywords = this.allowedKeywords;
-                object.allowedUrls = this.allowedKeywords
+                object.allowedUrls = this.allowedUrls
 
             }
         }
