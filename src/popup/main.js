@@ -14,11 +14,13 @@ document.addEventListener('alpine:init', () => {
         },
 
         addItem(event) {
-            event.preventDefault()
             if (!this.context) return
             
             let item = (new FormData(event.target)).get('keyword')
-            this.context.add(event.target.getAttribute('data-collection'), item)
+            if (item) this.context.add(event.target.getAttribute('data-collection'), item)
+
+            event.preventDefault()
+            event.target.reset() // clear input
         }, 
 
 

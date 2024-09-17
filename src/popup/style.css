@@ -1,13 +1,24 @@
 body {
     display: grid;
+    width: 500px;
+    height: 500px;
+
     grid-template-columns: 1fr;
-    grid-template-rows: 1fr 9fr;
+    grid-template-rows: 30px 470px;
     gap: 0px 0px;
     grid-auto-flow: row;
-    min-width: 250px;
     grid-template-areas:
         "nav"
         "page";
+}
+
+.currPage {
+    grid-area: page;
+    margin: 15px;
+}
+
+.hidden {
+    display: none;
 }
 
 nav {
@@ -29,10 +40,20 @@ nav {
     grid-area: homeBtn
 }
 
-.currPage {
-    grid-area: page
+.TEMPCLASSNAMEIMPROVELATER {
+    display: grid;
+    grid-gap: 5px;
+
+    grid-template-columns: 9fr 1fr;
+    grid-template-areas: "left right";
 }
 
-.hidden {
-    display: none;
+.TEMPCLASSNAMEIMPROVELATER > *:first-child {
+    margin: none;
+    grid-area: left;
+}
+
+.TEMPCLASSNAMEIMPROVELATER > *:last-child {
+    margin-top: 0px;
+    grid-area: right;
 }

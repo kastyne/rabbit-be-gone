@@ -6,6 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Extension</title>
 
+    <link rel="stylesheet" href="/assets/picnic.css">
     <link rel="stylesheet" href="/assets/style.css">
     <link rel="stylesheet" href="style.css">
 
@@ -15,45 +16,42 @@
 
 <body x-data="model">
     <nav>
-        <button id="home" @click="changePage">Home</button>
-        <button id="list" @click="changePage">List</button>
-        <button id="settings" @click="changePage">Settings</button>
-        <button id="about" @click="changePage">About</button>
+        <button class="pseudo" id="home" @click="changePage">Home</button>
+        <button class="pseudo" id="list" @click="changePage">List</button>
+        <button class="pseudo" id="settings" @click="changePage">Settings</button>
+        <button class="pseudo" id="about" @click="changePage">About</button>
     </nav>
     <section :class="homePage">
         <h1 id="scoreHeading" x-text="scoreTxt"></h1>
         <ul id="historyList"></ul>
     </section>
     <section :class="listPage">
-        <h1>Block Lists</h1>
-        <p>Customise lists here.</p>
-
-        <h3>Whitelist Keywords</h3>
+        <h1>Whitelisted Keywords</h1>
         <div x-data="allowedKeywords">
-            <form data-collection="allowedKeywords" @submit="addItem">
-                <input name="keyword" placeholder="Add Keyword"></input>
-                <button type="submit">Add</button>
-            </form>
             <template x-for="keyword of allowedKeywords">
-                <div>
+                <div class="TEMPCLASSNAMEIMPROVELATER">
                     <span x-text="keyword"></span>
-                    <button :value="keyword" data-collection="allowedKeywords" @click="deleteItem">Remove</button>
+                    <button :value="keyword" data-collection="allowedKeywords" @click="deleteItem" class="error">X</button>
                 </div>                
             </template>
+            <form class="TEMPCLASSNAMEIMPROVELATER" data-collection="allowedKeywords" @submit="addItem">
+                <input name="keyword" placeholder="Add Keyword"></input>
+                <button type="submit">+</button>
+            </form>
         </div>
 
-        <h3>Whitelist URLs</h3>
+        <h1>Whitelisted URLs</h1>
         <div x-data="allowedUrls">
-            <form data-collection="allowedUrls" @submit="addItem">
-                <input name="keyword" placeholder="Add URL"></input>
-                <button type="submit">Add</button>
-            </form>
             <template x-for="url of allowedUrls">
-                <div>
+                <div class="TEMPCLASSNAMEIMPROVELATER">
                     <span x-text="url"></span>
-                    <button :value="url" data-collection="allowedUrls" @click="deleteItem">Remove</button>
+                    <button :value="url" data-collection="allowedUrls" @click="deleteItem" class="error">X</button>
                 </div>
             </template>
+            <form class="TEMPCLASSNAMEIMPROVELATER" data-collection="allowedUrls" @submit="addItem">
+                <input name="keyword" placeholder="Add URL"></input>
+                <button type="submit">+</button>
+            </form>
         </div>
         
     </section>
