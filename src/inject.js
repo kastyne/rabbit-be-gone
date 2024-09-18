@@ -42,7 +42,7 @@ const blockPage = (currentPage) => {
     window.location = chrome.runtime.getURL("blockpage/index.html") + "#" + JSON.stringify(currentPage)
 }
 
-getExtentionContext(context => {
+getExtensionContext(context => {
     let currentPage = {
         'url': String(window.location),
         'title': document.title,

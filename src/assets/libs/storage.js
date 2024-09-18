@@ -26,7 +26,7 @@ const notIn = (item, array) => {
 }
 
 // extention storage apis cuz they are a pain
-const getExtentionContext = callback => {
+const getExtensionContext = callback => {
 
     chrome.storage.local.get().then(localStorage => {
     chrome.storage.sync.get().then(syncStorage => {

@@ -24,7 +24,7 @@ document.addEventListener('alpine:init', () => {
         }, 
 
 
-        init() {    getExtentionContext(context => {
+        init() {    getExtensionContext(context => {
             context.inject(this) // csp bypass 
 
             pager.inject(this, 'Page',
