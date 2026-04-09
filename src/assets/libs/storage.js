@@ -30,30 +30,34 @@ const getExtensionContext = callback => {
 
     chrome.storage.local.get().then(localStorage => {
     chrome.storage.sync.get().then(syncStorage => {
+		let model = {
+		    options: [
+		        { name: 'cutoffMode', preset: "pageCount", area: 'sync' },
+		        { name: 'filterMode', preset: "blacklist", area: 'sync' }
+		    ],
+		    lists: [
+		        { name: 'distractionScores', preset: distractionScoresPreset, area: 'sync' },
+		        { name: 'allowedUrls', preset: allowedUrlsPreset, area: 'sync' },
+		        { name: 'allowedKeywords', preset: allowedKeywordsPreset, area: 'sync' },
+		        { name: 'historyList', preset: [], area: 'local' },
+		        { name: 'exceptionList', preset: [], area: 'local' }
+		    ]
+		}
+		
         let context = {
-            distractionScores: syncStorage.distractionScores ? syncStorage.distractionScores : distractionScoresPreset,
-    
-            allowedUrls: syncStorage.allowedUrls ?? allowedUrlsPreset,
-            allowedKeywords: syncStorage.allowedKeywords ?? allowedKeywordsPreset,
-    
-            cutoffMode: syncStorage.cutoffMode ? syncStorage.cutoffMode : "pageCount",
-            filterMode: syncStorage.filterMode ? syncStorage.filterMode : "blacklist",
-            historyList: localStorage.historyList ? localStorage.historyList : [],
-
-            historyPush(page) {
-                this.historyList.push(page)
-                chrome.storage.local.set({'historyList': this.historyList})
-            },
-
+        	lists: model.lists.map(f => f.name),
+        	options: model.options.map(f => f.name),
+        	
+        	
             add(arrayName, item) {
-                if (notIn(arrayName, ['distractionScores', 'allowedUrls', 'allowedKeywords'])) return false
+                if (notIn(arrayName, this.lists)) return false
                 
                 this[arrayName].push(item)
                 chrome.storage.sync.set({[arrayName]: this[arrayName]})
             },
 
             remove(arrayName, item) {
-                if (notIn(arrayName, ['distractionScores', 'allowedUrls', 'allowedKeywords'])) return false
+                if (notIn(arrayName, this.lists)) return false
 
                 let index = this[arrayName].indexOf(item)
                 if (index > -1) {
@@ -63,20 +67,26 @@ const getExtensionContext = callback => {
             },
 
             changeMode(mode, value) {
-                if (notIn(mode, ['cuttofMode', 'filterMode'])) return false
+                if (notIn(mode, this.options)) return false
 
                 this[mode] = value
                 chrome.storage.sync.set({mode: value})
             },
 
-            inject(object) {   
-                object.context = this;
-                object.historyList = this.historyList;
-                object.allowedKeywords = this.allowedKeywords;
+            inject(object) {
+                object.context = this
+                object.historyList = this.historyList
+                object.allowedKeywords = this.allowedKeywords
                 object.allowedUrls = this.allowedUrls
 
             }
-        }
+        };
+
+		[...model.options, ...model.lists].forEach(field => {
+			let area = field.area == 'sync' ? syncStorage : localStorage
+			context[field.name] = area[field.name] ?? field.preset
+		})
+        
         callback(context)
     })})
 }

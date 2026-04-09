@@ -39,7 +39,7 @@ const whitelistMode = (context, currentPage) => {
 
 
 const blockPage = (currentPage) => {
-    window.location = chrome.runtime.getURL("blockpage/index.html") + "#" + JSON.stringify(currentPage)
+    window.location = chrome.runtime.getURL("blockpage/index.html") + "#" + btoa(JSON.stringify(currentPage))
 }
 
 getExtensionContext(context => {
@@ -48,7 +48,7 @@ getExtensionContext(context => {
         'title': document.title,
         'time': Date.now(),
     }
-    context.historyPush(currentPage);
+    context.add('historyList', currentPage);
 
     if (context.filterMode === "blacklist") blacklistMode(context, currentPage);
     else if (context.filterMode === "whitelist") whitelistMode(context, currentPage);
