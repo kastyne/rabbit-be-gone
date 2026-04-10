@@ -10,7 +10,11 @@ document.addEventListener('alpine:init', () => {
         
         deleteItem(event) {
             if (!this.context) return
+            console.log(event.target.value)
             this.context.remove(event.target.getAttribute('data-collection'), event.target.value)
+            console.log(JSON.stringify(this.context.distractionScores))
+
+            event.preventDefault()
         },
 
         addItem(event) {
@@ -23,6 +27,23 @@ document.addEventListener('alpine:init', () => {
             event.target.reset() // clear input
         }, 
 
+		addDistraction(event) {
+			if (!this.context) return
+
+			let string = (new FormData(event.target)).get("string")
+			if (this.context.distractionScores.findIndex(d => d.string == string) == -1) this.context.add('distractionScores', {string:string, score:100})
+
+		
+
+			event.preventDefault()
+			event.target.reset()
+		},
+
+		deleteDistraction(event) {
+			if (!this.context) return
+
+			
+		},
 
         init() {    getExtensionContext(context => {
             context.inject(this) // csp bypass 

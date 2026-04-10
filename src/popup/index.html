@@ -26,12 +26,25 @@
         <ul id="historyList"></ul>
     </section>
     <section :class="listPage">
+    	<h1>Distractions</h1>
+    	<div x-data="distractionScores">
+			<template x-for="({string, score}, index) in distractionScores" :key="string">
+				<div class="TEMPCLASSNAMEIMPROVELATER">
+					<span x-text="string"></span>
+					<button :value="index" data-collection="distractionScores" @click="deleteItem" class="error">X</button> 
+				</div>
+			</template>
+			<form class="TEMPCLASSNAMEIMPROVELATER" @submit="addDistraction">
+			    <input name="string" placeholder="Add Distraction"></input>
+			    <button type="submit">+</button>
+			</form>
+    	</div>
         <h1>Whitelisted Keywords</h1>
         <div x-data="allowedKeywords">
-            <template x-for="keyword of allowedKeywords">
+            <template x-for="(keyword, index) in allowedKeywords">
                 <div class="TEMPCLASSNAMEIMPROVELATER">
                     <span x-text="keyword"></span>
-                    <button :value="keyword" data-collection="allowedKeywords" @click="deleteItem" class="error">X</button>
+                    <button :value="index" data-collection="allowedKeywords" @click="deleteItem" class="error">X</button>
                 </div>                
             </template>
             <form class="TEMPCLASSNAMEIMPROVELATER" data-collection="allowedKeywords" @submit="addItem">

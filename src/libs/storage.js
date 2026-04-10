@@ -56,18 +56,18 @@ const getExtensionContext = callback => {
         	
             add(arrayName, item) {
                 if (notIn(arrayName, this.lists)) return false
+                if (this[arrayName].indexOf(item) > 0) return false
                 
                 this[arrayName].push(item)
+                console.log(JSON.stringify(this[arrayName]))
                 this.setField(arrayName, {[arrayName]: this[arrayName]})
             },
 
-            remove(arrayName, item) {
+            remove(arrayName, index) {
                 if (notIn(arrayName, this.lists)) return false
 
-                let index = this[arrayName].indexOf(item)
-                if (index > -1) {
-                    this[arrayName].splice(index, 1)
-                }
+                this[arrayName].splice(index, 1)
+				console.log(JSON.stringify(this[arrayName])) //proxies! yay
                 this.setField(arrayName, {[arrayName]: this[arrayName]})
             },
 
@@ -79,11 +79,9 @@ const getExtensionContext = callback => {
             },
 
             inject(object) {
-                object.context = this
-                object.historyList = this.historyList
-                object.allowedKeywords = this.allowedKeywords
-                object.allowedUrls = this.allowedUrls
-
+                object.context = this;
+                [...model.options, ...model.lists].forEach(field => object[field.name] = context[field.name])
+                
             }
         };
 
