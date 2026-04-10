@@ -47,13 +47,18 @@ const getExtensionContext = callback => {
         let context = {
         	lists: model.lists.map(f => f.name),
         	options: model.options.map(f => f.name),
+        	fieldToArea: {},
         	
+        	
+        	setField(fieldName, item) {
+        		chrome.storage[this.fieldToArea[fieldName]].set(item)
+        	},
         	
             add(arrayName, item) {
                 if (notIn(arrayName, this.lists)) return false
                 
                 this[arrayName].push(item)
-                chrome.storage.sync.set({[arrayName]: this[arrayName]})
+                this.setField(arrayName, {[arrayName]: this[arrayName]})
             },
 
             remove(arrayName, item) {
@@ -63,14 +68,14 @@ const getExtensionContext = callback => {
                 if (index > -1) {
                     this[arrayName].splice(index, 1)
                 }
-                chrome.storage.sync.set({[arrayName]: this[arrayName]})
+                this.setField(arrayName, {[arrayName]: this[arrayName]})
             },
 
             changeMode(mode, value) {
                 if (notIn(mode, this.options)) return false
 
                 this[mode] = value
-                chrome.storage.sync.set({mode: value})
+                this.setField(arrayName, {mode: value})
             },
 
             inject(object) {
@@ -84,8 +89,11 @@ const getExtensionContext = callback => {
 
 		[...model.options, ...model.lists].forEach(field => {
 			let area = field.area == 'sync' ? syncStorage : localStorage
+		
+			context.fieldToArea[field.name] = field.area 
 			context[field.name] = area[field.name] ?? field.preset
 		})
+
         
         callback(context)
     })})

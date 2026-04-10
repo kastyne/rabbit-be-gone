@@ -9,11 +9,22 @@
     <link rel="stylesheet" href="/assets/styles/base.css">
     <link rel="stylesheet" href="style.css">
 
+	<script src="/libs/storage.js"></script>
     <script defer src="main.js"></script>
 </head>
 <body x-data="model">
     <h1 x-text="title">HIIII</h1>
-    
+
+    <form @submit="addException">
+		<select name="time">
+			<option value="86400000">1 Day</option>
+			<option value="3600000">1 Hour</option>
+			<option value="1800000">30 Minutes</option>
+			<option value="300000">5 Minutes</option>
+		 	<option value="1000">1 Second</option>
+		</select>
+		<button type="submit">Add Temp Exception</button>
+	</form>
     <script defer src="/libs/alpine.js"></script>
 </body>
 </html>
